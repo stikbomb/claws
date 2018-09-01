@@ -3,6 +3,7 @@
 const UsersModel = require('./models/users.model');
 const MessageModel = require('./models/messages.model');
 const GamesModel = require('./models/games.model');
+const textsController = require('./controllers/textscontrol');
 
 module.exports = (app, passport) => {
 
@@ -118,7 +119,14 @@ module.exports = (app, passport) => {
         console.log('Succes!!!');
         res.sendStatus(200);
       })
-    })
+    });
+
+    app.get('/getalltexts', textsController.getAll);
+    app.get('/text/:id', textsController.getText);
+    app.post('/text', textsController.addText);
+    app.put('/text/:id', textsController.updateText);
+    app.delete('/text/:id', textsController.deleteText);
+
 };
 
 function isLoggedIn(req, res, next) {

@@ -34,7 +34,7 @@ $('.logout-btn').on('click', e => {
 
 $(document).ready(() => {
   var socket = io.connect('http://127.0.0.1:9999');
-  // var socket = io.connect('http://138.64.234.86:9999');
+  // var socket = io.connect('http://138.68.234.86:9999');
   socket.on('connected', function(msg) {
     console.log(msg);
     console.log(socket.username);
