@@ -13,6 +13,7 @@ const GamesSchema = new Schema({
   players: [{id: String,
     name: {type: String},
     result: String}],
+  text: {type: String}
 },
 {
   versionKey: false,

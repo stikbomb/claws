@@ -4,6 +4,7 @@ const UsersModel = require('./models/users.model');
 const MessageModel = require('./models/messages.model');
 const GamesModel = require('./models/games.model');
 const textsController = require('./controllers/textscontrol');
+const faker = require('./controllers/fakercontrol');
 
 module.exports = (app, passport) => {
 
@@ -135,3 +136,5 @@ function isLoggedIn(req, res, next) {
 
     res.redirect('/');
 }
+
+// faker.addTexts(10);
