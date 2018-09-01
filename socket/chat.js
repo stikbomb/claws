@@ -11,13 +11,12 @@ exports.msg = (socket, content) => {
     username: socket.username,
   };
 
-  MessageModel.create(obj, (err, result) => {
+  MessageModel.create(obj, (err) => {
     if (err) {
       return console.log('MessageModel', err);
     }
-
     socket.emit('message', obj);
-    socket.emit('message', obj);
+    socket.to('all').emit('message', obj);
   });
 };
 

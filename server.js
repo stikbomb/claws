@@ -63,6 +63,6 @@ require('./router')(app, passport);
 
 require('./socket/index')(io);
 
-server.listen(7777, () => {
-  console.log('Server started on port 7777');
+server.listen(9999, () => {
+  console.log('Server started on port 9999');
 });

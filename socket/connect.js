@@ -1,32 +1,27 @@
 'use strict';
 let GamesModel = require('../models/games.model');
 let User = require('../models/users.model');
+let utils = require('./utils');
 
 
 exports.connect = (socket) => {
-  GamesModel.find({status: 'Starting'}, (err, games) => {
-    if (err) throw err;
-    socket.emit('activeGames', games);
-  });
+  utils.getActiveGames(socket);
+  socket.join('all');
+  socket.username = utils.getName(socket);
+  socket.emit('connected',
+    `You are connected to chat as ${socket.username}`);
 
-  if (!socket.handshake.session.passport) {
-    socket.username = 'guest' + Math.round(Math.random() * 10000000);
-    socket.emit('connected',
-      `You are connected to chat as ${socket.username}`);
-  } else {
-    let var0 = socket.handshake.session.passport.user;
-    User.findOne({_id: var0._id}, (err, user) => {
-      if (err)
-        return (err);
-      socket.username = user.local.name;
-      socket.emit('connected',
-        `You are connected to chat as ${socket.username}`);
-    });
-  }
 };
 
 exports.init = (io, socket) => {
+  let id = 'guest';
+  if (socket.handshake.session.passport) {
+    id = socket.handshake.session.passport.user._id;
+  }
   const obj = {
+    host: {id: id,
+      name: socket.username,
+    },
     date: Date.now(),
     dateMs: Date.now(),
     status: 'Starting',
@@ -36,12 +31,13 @@ exports.init = (io, socket) => {
     if (err) {
       return console.log('MessageModel', err);
     }
+    console.log(socket.handshake.session.passport);
     socket.join(game._id, (err) => {
       if (err) throw err;
       socket.emit('room', game._id);
       setTimeout(() => {
         const obj = {
-          content: ' START IN 10 SECS',
+          content: 'START IN 10 SECS',
         };
         // socket.emit('alert', obj);
         socket.to(game._id).emit('alert', obj);
@@ -62,7 +58,16 @@ exports.joinGame = (socket, game) => {
     if (err) throw err;
     let time = Date.now();
     let timer = time - game.dateMs + 30000;
-    socket.emit('joined', timer);
-    socket.emit('room', game._id);
+    let id = 'guest';
+    if (socket.handshake.session.passport) {
+      id = socket.handshake.session.passport.user._id;
+    }
+    let player = {id: id,
+      name: socket.username};
+    GamesModel.findOneAndUpdate({_id: game._id}, {$push: {players: player}}, (err) => {
+      if (err) throw err;
+      socket.emit('joined', timer);
+      socket.emit('room', game._id);
+    });
   });
 };

@@ -1,4 +1,6 @@
 'use strict';
+
+
 let list;
 let mainRoom;
 function response(data) {
@@ -31,9 +33,11 @@ $('.logout-btn').on('click', e => {
 });
 
 $(document).ready(() => {
-  var socket = io.connect('http://127.0.0.1:7777');
+  var socket = io.connect('http://127.0.0.1:9999');
+  // var socket = io.connect('http://138.64.234.86:9999');
   socket.on('connected', function(msg) {
     console.log(msg);
+    console.log(socket.username);
     socket.emit('login', 'WTF!');
     socket.emit('receiveHistory');
     // socket.emit('start');
@@ -48,7 +52,7 @@ $(document).ready(() => {
   socket.on('room', room => {
       mainRoom = room;
       console.log(mainRoom);
-  })
+  });
 
   socket.on('history', messages => {
     for (let message of messages) {

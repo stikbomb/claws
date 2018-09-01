@@ -8,8 +8,10 @@ const GamesSchema = new Schema({
   dateMs: {type: Number},
   status: {type: String},
   host: {id: {type: String},
+    name: {type: String},
     result: {type: String}},
   players: [{id: String,
+    name: {type: String},
     result: String}],
 },
 {
